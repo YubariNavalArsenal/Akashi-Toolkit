@@ -133,7 +133,7 @@ public class SettingActivity extends BaseActivity {
                         @Override
                         protected void onPostExecute(Void aVoid) {
                             if (isVisible()) {
-                                Toast.makeText(getActivity(), "Cleared", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), getString(R.string.cleared), Toast.LENGTH_SHORT).show();
                             }
 
                             super.onPostExecute(aVoid);

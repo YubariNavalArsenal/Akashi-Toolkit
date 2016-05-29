@@ -58,4 +58,15 @@ public class ShipVoice {
     public void setVoiceId(int voiceId) {
         this.voiceId = voiceId;
     }
+
+    @Override
+    public String toString() {
+        return "ShipVoice{" +
+                "zh='" + zh + '\'' +
+                ", jp='" + jp + '\'' +
+                ", url='" + url + '\'' +
+                ", scene='" + scene + '\'' +
+                ", voiceId=" + voiceId +
+                '}';
+    }
 }

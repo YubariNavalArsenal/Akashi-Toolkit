@@ -81,7 +81,7 @@ public class AboutActivity extends BaseActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     ClipBoardUtils.putTextIntoClipboard(getActivity(), "437033068");
-                    Toast.makeText(getActivity(), String.format(getString(R.string.copied_to_clipborad), "437033068"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), String.format(getString(R.string.copied_to_clipboard), "437033068"), Toast.LENGTH_SHORT).show();
                     return false;
                 }
             });

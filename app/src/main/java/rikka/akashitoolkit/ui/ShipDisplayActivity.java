@@ -26,6 +26,7 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -48,7 +49,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +80,7 @@ import rikka.akashitoolkit.support.MusicPlayer;
 import rikka.akashitoolkit.support.Settings;
 import rikka.akashitoolkit.support.StaticData;
 import rikka.akashitoolkit.utils.KCStringFormatter;
+import rikka.akashitoolkit.utils.MyPasswordTransformationMethod;
 import rikka.akashitoolkit.utils.MySpannableFactory;
 import rikka.akashitoolkit.utils.Utils;
 
@@ -286,6 +293,33 @@ public class ShipDisplayActivity extends BaseItemDisplayActivity implements View
             mRecyclerView.startAnimation(animation);
         }
 
+        cache_file = getCacheDir().getAbsolutePath() + "/json/" + mItem.getId();
+        File file = new File(cache_file);
+
+        if (file.exists()) {
+            try {
+                mAdapter.setData((List<ShipVoice>) new Gson().fromJson(
+                        new FileReader(cache_file),
+                        new TypeToken<ArrayList<ShipVoice>>() {
+                        }.getType()));
+
+                Log.d(getClass().getSimpleName(), "use cached file: " + cache_file);
+
+                // get new after 1 day
+                if (System.currentTimeMillis() - file.lastModified() > 60 * 60 * 24 * 1000L) {
+                    downloadVoiceList();
+                }
+            } catch (Exception ignored) {
+                downloadVoiceList();
+            }
+        } else {
+            downloadVoiceList();
+        }
+    }
+
+    private String cache_file;
+
+    private void downloadVoiceList() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.kcwiki.moe")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -300,6 +334,10 @@ public class ShipDisplayActivity extends BaseItemDisplayActivity implements View
                 //Gson gson = new Gson();
                 //mAdapter.setData((List<ShipVoice>) gson.fromJson(new JsonReader(new InputStreamReader(response.body().byteStream())), new TypeToken<ArrayList<ShipVoice>>() {}.getType()));
                 mAdapter.setData(response.body());
+
+                Gson gson = new Gson();
+                Utils.saveStreamToFile(new ByteArrayInputStream(gson.toJson(response.body()).getBytes()),
+                        cache_file);
             }
 
             @Override
@@ -415,7 +453,7 @@ public class ShipDisplayActivity extends BaseItemDisplayActivity implements View
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
             switch (getItemViewType(position)) {
                 case TYPE_HEAD:
                     setView((LinearLayout) holder.itemView);
@@ -425,7 +463,7 @@ public class ShipDisplayActivity extends BaseItemDisplayActivity implements View
                     ((ViewHolderHead2) holder).mTitle.setText(R.string.voice);
                     break;
                 default:
-                        final Voice item = mData.get(position - 2);
+                    final Voice item = mData.get(position - 2);
 
                         /*if (position == 2 || !mData.get(position - 3).type.equals(item.type)) {
                             ((ViewHolderItem) holder).mTitle.setVisibility(View.VISIBLE);
@@ -444,9 +482,16 @@ public class ShipDisplayActivity extends BaseItemDisplayActivity implements View
                     ((ViewHolderItem) holder).mContent.setText(item.voice.getJp());
                     ((ViewHolderItem) holder).mContent2.setText(item.voice.getZh());
 
-                        ((ViewHolderItem) holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                    if (item.voice.getVoiceId() == 22) {
+                        setTextViewMode((ViewHolderItem) holder, true);
+                    }
+
+                    ((ViewHolderItem) holder).mLinearLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (((ViewHolderItem) holder).mContent.getInputType() == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
+                                setTextViewMode((ViewHolderItem) holder, false);
+                            } else {
                                 try {
                                     final String url = item.voice.getUrl();
                                     Log.d("VoicePlay", "url " + url);
@@ -455,10 +500,26 @@ public class ShipDisplayActivity extends BaseItemDisplayActivity implements View
                                     e.printStackTrace();
                                 }
                             }
-                        });
-
+                        }
+                    });
 
                     break;
+            }
+        }
+
+        private void setTextViewMode(ViewHolderItem holder, boolean hide) {
+            if (hide) {
+                holder.mContent.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                holder.mContent2.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+                holder.mContent.setTransformationMethod(MyPasswordTransformationMethod.getInstance());
+                holder.mContent2.setTransformationMethod(MyPasswordTransformationMethod.getInstance());
+            } else {
+                holder.mContent.setInputType(InputType.TYPE_NULL);
+                holder.mContent2.setInputType(InputType.TYPE_NULL);
+
+                holder.mContent.setTransformationMethod(null);
+                holder.mContent2.setTransformationMethod(null);
             }
         }
 

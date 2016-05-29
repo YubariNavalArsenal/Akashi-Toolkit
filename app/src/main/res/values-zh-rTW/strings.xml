@@ -146,7 +146,8 @@
     <string name="cache_max_size">最大缓存空间</string>
     <string name="no_limit">无限制</string>
     <string name="clear_cache">清除缓存</string>
-    <string name="clear_cache_summary">清除图片、语音等的缓存</string>
+    <string name="clear_cache_summary">清除缓存的图片、语音等</string>
+    <string name="cleared">已清除</string>
     <string name="ranking">战果查询</string>
 
     <string name="feedback_summary">发送邮件给开发者</string>
@@ -158,9 +159,8 @@
 
     <string name="send_via">发送方式</string>
     <string name="no_mail_app">没有邮件客户端的样子</string>
-    <!--<string name="feedback_mail_format" formatted="false">系统版本: %s (API %d)\n应用版本: %d\n是否为 Google Play 版: %s</string>-->
 
-    <string name="copied_to_clipborad">%s 已复制到剪贴板</string>
+    <string name="copied_to_clipboard">%s 已复制到剪贴板</string>
 
     <string name="nothing_bookmarked">没有书签</string>
     <string name="nothing_bookmarked_summary">您可以通过长按和在详情视图中按下书签图标来将该项目加入书签。</string>

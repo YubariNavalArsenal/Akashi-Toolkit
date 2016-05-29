@@ -163,7 +163,8 @@ Activity &amp; Extra:
     <string name="cache_max_size">Max cache size</string>
     <string name="no_limit">No limit</string>
     <string name="clear_cache">Clear cache</string>
-    <string name="clear_cache_summary">Clear cache of image, voice…</string>
+    <string name="cleared">Cleared</string>
+    <string name="clear_cache_summary">Clear cached images, voices…</string>
     <string name="ranking">Ranking</string>
 
     <string name="feedback_summary">Send email to developer</string>
@@ -175,9 +176,8 @@ Activity &amp; Extra:
 
     <string name="send_via">Send via</string>
     <string name="no_mail_app">No mail app</string>
-    <!--<string name="feedback_mail_format" formatted="false">System version: %s (API %d)\nApp version: %d\nInstall from Google Play: %s</string>-->
 
-    <string name="copied_to_clipborad">%s copied to clipboard.</string>
+    <string name="copied_to_clipboard">%s copied to clipboard.</string>
 
     <string name="nothing_bookmarked">Nothing bookmarked</string>
     <string name="nothing_bookmarked_summary">You can add item to bookmark by long press it or click bookmark in detail view.</string>
